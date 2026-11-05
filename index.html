@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#17152b">
+<title>PAINT ALL</title>
+<style>
+:root{--bg:#17152b;--panel:#24213e;--ink:#fff;--muted:#b9b5d5;--pink:#ff6fae;--cyan:#6de6df;--yellow:#ffd76a}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% 0,#34305b 0,var(--bg) 58%);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif;overscroll-behavior:none}body{padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);display:flex;justify-content:center}.app{width:min(100%,520px);padding:18px 0 26px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.logo{font-size:25px;font-weight:1000;letter-spacing:1px}.logo span{color:var(--pink)}.coins{background:#302c50;border:1px solid #514b78;border-radius:14px;padding:9px 13px;font-weight:800;color:var(--yellow)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat,.panel{background:linear-gradient(145deg,#2a2748,#211e39);border:1px solid #454064;border-radius:17px;padding:12px;text-align:center}.stat small{display:block;color:var(--muted);font-size:11px;font-weight:700}.stat strong{font-size:20px}.timer-wrap{height:10px;background:#393553;border-radius:20px;margin:13px 2px 17px;overflow:hidden}.timer{height:100%;width:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));border-radius:20px;transition:width .15s linear}.goal{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px;color:var(--muted);font-size:13px;font-weight:700}.board{display:grid;gap:7px;touch-action:manipulation;user-select:none;-webkit-user-select:none}.tile{aspect-ratio:1;border:0;border-radius:11px;background:linear-gradient(145deg,#f3f0ff,#c9c4e5);box-shadow:inset 0 -4px 0 #aaa4c9,0 3px 0 #100e20;transition:transform .08s,background .12s;min-width:0}.tile:active{transform:scale(.94)}.tile.done{background:linear-gradient(145deg,#78f4d9,#31b9b1);box-shadow:inset 0 -4px 0 #24958e,0 3px 0 #100e20}.tile:focus-visible{outline:3px solid var(--yellow)}.controls{display:flex;gap:9px;margin-top:16px}.btn{border:0;border-radius:14px;padding:13px 12px;font-size:14px;font-weight:900;color:#211d38;background:var(--yellow);flex:1;min-height:48px}.btn.secondary{background:#393556;color:#fff;border:1px solid #5a547c}.btn:disabled{opacity:.45}.hint{text-align:center;color:var(--muted);font-size:12px;margin:12px 0 0;line-height:1.5}.overlay{position:fixed;inset:0;background:#100e20d9;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.overlay.show{display:flex}.modal{width:min(100%,390px);background:#272342;border:1px solid #5a547c;border-radius:23px;padding:23px;text-align:center;box-shadow:0 20px 70px #0008}.modal h2{font-size:27px;margin:3px 0 8px}.modal p{color:var(--muted);line-height:1.5}.reward{color:var(--yellow);font-size:20px;font-weight:900;margin:12px}.shop-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#373252;border-radius:13px;padding:11px;margin:10px 0;text-align:left}.shop-row small{display:block;color:var(--muted);font-size:11px}.buy{background:var(--cyan);border:0;border-radius:10px;padding:10px 12px;font-weight:900;white-space:nowrap;color:#152b2a}.buy:disabled{opacity:.4}.modal .btn{width:100%;margin-top:10px}.subtle{font-size:11px;color:#aaa5c9}.shake{animation:shake .25s}@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}@media(min-width:430px){.board{gap:9px}.tile{border-radius:13px}}
+</style>
+</head>
+<body>
+<main class="app">
+ <header class="top"><div class="logo">PAINT<span>_</span>ALL</div><div class="coins">🪙 <b id="coins">0</b></div></header>
+ <section class="stats">
+  <div class="stat"><small>LEVEL</small><strong id="level">1</strong></div>
+  <div class="stat"><small>PAINTED</small><strong id="progress">0/16</strong></div>
+  <div class="stat"><small>TIME</small><strong id="time">30s</strong></div>
+ </section>
+ <div class="timer-wrap"><div class="timer" id="timerBar"></div></div>
+ <div class="goal"><span>🎨 모든 블록을 색칠하세요!</span><span id="best">BEST 1</span></div>
+ <section class="board" id="board" aria-label="색칠 보드"></section>
+ <div class="controls"><button class="btn secondary" id="restart">↻ 다시 시작</button><button class="btn" id="pause">Ⅱ 일시정지</button></div>
+ <p class="hint">블록을 탭해서 색칠하세요. 모든 블록을 칠하면 레벨 클리어!<br>레벨이 오를수록 블록이 많아지고 시간이 짧아져요.</p>
+</main>
+<div class="overlay show" id="startOverlay"><div class="modal"><h2>🎨 PAINT ALL</h2><p>제한 시간 안에 모든 블록을 색칠하고<br>최고 레벨에 도전하세요!</p><div class="reward">준비됐나요?</div><button class="btn" id="startBtn">게임 시작</button></div></div>
+<div class="overlay" id="resultOverlay"><div class="modal"><h2 id="resultTitle">LEVEL CLEAR!</h2><p id="resultText"></p><div class="reward" id="rewardText"></div><div id="shop"></div><button class="btn" id="nextBtn">다음 레벨 →</button><button class="btn secondary" id="closeResult">계속하기</button></div></div>
+<div class="overlay" id="pauseOverlay"><div class="modal"><h2>⏸ 일시정지</h2><p>잠깐 쉬어도 괜찮아요!</p><button class="btn" id="resume">계속하기</button></div></div>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id);
+ let level=1,coins=0,painted=0,total=16,timeLeft=30,timeLimit=30,timer=null,running=false,paused=false,extraTime=0,bonusCoins=0,board=[];
+ const upgrades={time:0,bonus:0};
+ function save(){try{localStorage.setItem('paintall-save',JSON.stringify({level,coins,upgrades}))}catch(e){}}
+ function load(){try{const s=JSON.parse(localStorage.getItem('paintall-save')||'{}');level=Math.max(1,s.level||1);coins=s.coins||0;Object.assign(upgrades,s.upgrades||{})}catch(e){}}
+ function levelSize(){return Math.min(8,4+Math.floor((level-1)/2))}
+ function baseTime(){return Math.max(12,34-Math.floor((level-1)*1.45)+upgrades.time*4)}
+ function updateStats(){$('level').textContent=level;$('coins').textContent=coins;$('progress').textContent=painted+'/'+total;$('time').textContent=Math.ceil(timeLeft)+'s';$('timerBar').style.width=Math.max(0,timeLeft/timeLimit*100)+'%';$('best').textContent='LEVEL '+level}
+ function build(){clearInterval(timer);running=false;paused=false;const size=levelSize();total=size*size;painted=0;timeLimit=baseTime();timeLeft=timeLimit;board=Array(total).fill(false);$('board').style.gridTemplateColumns='repeat('+size+',minmax(0,1fr))';$('board').innerHTML='';board.forEach((_,i)=>{const b=document.createElement('button');b.className='tile';b.setAttribute('aria-label','블록 '+(i+1));b.addEventListener('click',()=>paint(i));$('board').appendChild(b)});updateStats()}
+ function start(){ $('startOverlay').classList.remove('show');build();running=true;timer=setInterval(tick,100); }
+ function tick(){if(!running||paused)return;timeLeft=Math.max(0,timeLeft-.1);updateStats();if(timeLeft<=0)gameOver()}
+ function paint(i){if(!running||paused||board[i])return;board[i]=true;painted++;$('board').children[i].classList.add('done');updateStats();if(painted===total)clearLevel()}
+ function clearLevel(){running=false;clearInterval(timer);const earned=10+level*3+upgrades.bonus*2;coins+=earned;save();$('resultTitle').textContent='🎉 LEVEL '+level+' CLEAR!';$('resultText').textContent='모든 블록을 색칠했어요! 다음 레벨은 '+(level+1)+'단계예요.';$('rewardText').textContent='🪙 +'+earned+' 코인';renderShop();$('nextBtn').style.display='block';$('closeResult').style.display='none';$('resultOverlay').classList.add('show');updateStats()}
+ function gameOver(){running=false;clearInterval(timer);$('resultTitle').textContent='⏰ TIME UP!';$('resultText').textContent='아쉽지만 괜찮아요. 다시 도전해 보세요!';$('rewardText').textContent=painted+'/'+total+' 블록 색칠';$('shop').innerHTML='';$('nextBtn').style.display='none';$('closeResult').textContent='다시 도전';$('closeResult').style.display='block';$('resultOverlay').classList.add('show')}
+ function renderShop(){const timeCost=35+upgrades.time*25,coinCost=45+upgrades.bonus*30;$('shop').innerHTML='<div class="shop-row"><div>⏱️ 시간 추가 <small>다음 레벨부터 +4초 · 보유 '+upgrades.time+'단계</small></div><button class="buy" id="buyTime">🪙 '+timeCost+'</button></div><div class="shop-row"><div>💰 코인 보너스 <small>레벨 클리어 보상 증가 · 보유 '+upgrades.bonus+'단계</small></div><button class="buy" id="buyBonus">🪙 '+coinCost+'</button></div>';$('buyTime').disabled=coins<timeCost;$('buyBonus').disabled=coins<coinCost;$('buyTime').onclick=()=>buy('time',timeCost);$('buyBonus').onclick=()=>buy('bonus',coinCost)}
+ function buy(type,cost){if(coins<cost)return;coins-=cost;upgrades[type]++;save();updateStats();renderShop()}
+ function next(){level++;save();$('resultOverlay').classList.remove('show');$('closeResult').textContent='계속하기';startLevel()}
+ function startLevel(){build();running=true;timer=setInterval(tick,100)}
+ function pause(){if(!running)return;paused=true;$('pauseOverlay').classList.add('show')}
+ function resume(){$('pauseOverlay').classList.remove('show');paused=false}
+ $('startBtn').onclick=start;$('nextBtn').onclick=next;$('closeResult').onclick=()=>{if($('resultTitle').textContent.includes('TIME')){ $('resultOverlay').classList.remove('show');startLevel()}else{$('resultOverlay').classList.remove('show');}};$('restart').onclick=()=>{if(running){clearInterval(timer);build();running=true;timer=setInterval(tick,100)}};$('pause').onclick=pause;$('resume').onclick=resume;
+ load();updateStats();
+})();
+</script>
+</body></html>
