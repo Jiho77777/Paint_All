@@ -82,7 +82,14 @@
  function pause(){if(!running)return;paused=true;$('pauseOverlay').classList.add('show')}
  function resume(){$('pauseOverlay').classList.remove('show');paused=false}
  document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();const dirs={w:[0,-1],arrowup:[0,-1],s:[0,1],arrowdown:[0,1],a:[-1,0],arrowleft:[-1,0],d:[1,0],arrowright:[1,0]};if(dirs[k]&&$('gamePage').style.display!=='none'){e.preventDefault();move(...dirs[k])}});document.querySelectorAll('[data-move]').forEach(b=>{const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};b.addEventListener('click',()=>move(...dirs[b.dataset.move]))});$('lobbyTabBtn').onclick=()=>showTab('lobby');$('gameTabBtn').onclick=()=>showTab('game');$('upgradeTabBtn').onclick=()=>showTab('upgrade');$('lobbyUpgradeBtn').onclick=()=>showTab('upgrade');$('startBtn').onclick=start;$('toLobbyBtn').onclick=()=>{running=false;clearInterval(timer);$('pauseOverlay').classList.remove('show');showTab('lobby')};$('nextBtn').textContent=tr('next');$('nextBtn').onclick=next;$('closeResult').onclick=()=>{if($('resultTitle').textContent.includes('TIME')){ $('resultOverlay').classList.remove('show');startLevel()}else{$('resultOverlay').classList.remove('show');}};$('restart').onclick=()=>{if(running){clearInterval(timer);build();running=true;timer=setInterval(tick,100)}};$('pause').onclick=pause;$('resume').onclick=resume;$('resetOpenBtn').onclick=()=>{$('resetOverlay').classList.add('show')};$('resetCancelBtn').onclick=()=>$('resetOverlay').classList.remove('show');$('resetConfirmBtn').onclick=()=>{running=false;clearInterval(timer);level=1;coins=0;upgrades.time=0;upgrades.bonus=0;upgrades.double=0;ownedSkins=['pink'];equippedSkin='pink';try{localStorage.removeItem('paintall-save')}catch(e){}$('resetOverlay').classList.remove('show');$('resultOverlay').classList.remove('show');$('pauseOverlay').classList.remove('show');build();updateStats();renderShop();showTab('lobby')};
- load();updateStats();renderShop();showTab('lobby');try{language=localStorage.getItem('paintall-language')||'ko'}catch(e){}$('languageSelect').value=language;$('languageSelect').onchange=e=>{language=e.target.value;try{localStorage.setItem('paintall-language',language)}catch(err){}applyLanguage()};applyLanguage();
+ try{language=localStorage.getItem('paintall-language')||'ko'}catch(e){language='ko'}
+ if(!L[language])language='ko';
+ const languagePicker=$('languageSelect');
+ languagePicker.value=language;
+ const changeLanguage=value=>{language=L[value]?value:'ko';languagePicker.value=language;try{localStorage.setItem('paintall-language',language)}catch(e){}applyLanguage()};
+ languagePicker.addEventListener('change',()=>changeLanguage(languagePicker.value));
+ languagePicker.addEventListener('input',()=>changeLanguage(languagePicker.value));
+ load();applyLanguage();showTab('lobby');
 })();
 </script>
 </body></html>
