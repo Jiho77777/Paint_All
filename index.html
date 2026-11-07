@@ -76,7 +76,7 @@
   renderSkinShop();
  }
  function buy(type,cost){if(coins<cost)return;if(type==='double'&&upgrades.double>=6)return;coins-=cost;upgrades[type]++;save();updateStats();renderShop()}
- function showTab(tab){const lobby=tab==='lobby',game=tab==='game';$('lobbyPage').style.display=lobby?'block':'none';$('gamePage').style.display=game?'block':'none';$('upgradePage').classList.toggle('show',tab==='upgrade');$('lobbyTabBtn').classList.toggle('active',lobby);$('gameTabBtn').classList.toggle('active',game);$('upgradeTabBtn').classList.toggle('active',tab==='upgrade');if(tab==='upgrade')renderShop();if(game){requestAnimationFrame(()=>{updatePlayer();applySkin()})}}
+ function showTab(tab){const lobby=tab==='lobby',game=tab==='game';$('lobbyPage').style.display=lobby?'block':'none';$('gamePage').style.display=game?'block':'none';$('upgradePage').classList.toggle('show',tab==='upgrade');$('lobbyTabBtn').classList.toggle('active',lobby);$('gameTabBtn').classList.toggle('active',game);$('upgradeTabBtn').classList.toggle('active',tab==='upgrade');if(tab==='upgrade')renderShop();if(game){if(!$('board').querySelector('.tile')){build();running=true;timer=setInterval(tick,100)}requestAnimationFrame(()=>{updatePlayer();applySkin()})}}
  function next(){level++;save();$('resultOverlay').classList.remove('show');$('closeResult').textContent='계속하기';startLevel()}
  function startLevel(){build();running=true;timer=setInterval(tick,100)}
  function pause(){if(!running)return;paused=true;$('pauseOverlay').classList.add('show')}
